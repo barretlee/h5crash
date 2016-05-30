@@ -39,7 +39,7 @@ var Closure = function() {
     r.innerHTML = '内存消耗： ' + cache + 'M';
   };
   return {
-    cache: _cache + 'M',
+    cache: cache + 'M',
     add: add,
     refresh: refresh
   }
