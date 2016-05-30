@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1,user-scalable=0">
+  <title>H5 Crash Demo - 3</title>
+</head>
+<body>
+<style>
+ul, li {
+  list-style: none;
+}
+ul {
+  padding: 0;
+  padding-left: 10px;
+  margin: 10px 0;
+  color: #CCC;
+}
+input:checked ~ span {
+  color: #666;
+}
+button {
+  border: 1px solid #CCC;
+  background: #eee;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  border-radius: 4px;
+  display: block;
+}
+#r {
+  color: #FFA500;
+  display: block;
+  border: 1px dotted #CCC;
+  padding: 10px;
+  background: #F5F5F5;
+}
+</style>
+<script>
+var Request = function() {
+  function getType() {
+    return document.querySelector('input:checked').value;
+  };
+  function getResource() {
+    var type = getType();
+    var resource = {
+      fetch: '/',
+      xhr: '/',
+      script: '//g.alicdn.com/sd/data_sufei/1.5.1/aplus/index.js',
+      css: '//g.alicdn.com/kg/global-util/1.0.3/index-min.css'
+    };
+    return resource[type];
+  };
+  return {
+    emitOne: function() {
+      var url = getResource() + "?_t=" + (new Date * 1 + Math.random());
+      switch(getType()) {
+        case 'fetch':
+          return fetch('/');
+        case 'xhr':
+          with(new XMLHttpRequest) {
+            open('GET', url);
+            send();
+          }
+          return;
+        case 'script':
+          var s = document.createElement('script');
+          s.src = url;
+          document.body.appendChild(s);
+          return;
+        case 'css':
+          var s = document.createElement('link');
+          s.href = url;
+          document.body.appendChild(s);
+      }
+    },
+    emit: function(num) {
+      [].slice.call(document.querySelectorAll('script,link')).forEach(function(item) {
+        item.parentNode && item.parentNode.removeChild(item);
+      });
+      while(num--) {
+        this.emitOne();
+      }
+    }
+  }
+};
+var request = Request();
+</script>
+
+<strong>请求类型: </strong>
+<ul>
+  <li><label><input type="radio" checked name="type" value="fetch"> <span>使用 Fetch 发送请求</span></label></li>
+  <li><label><input type="radio" name="type" value="xhr"> <span>使用 XHR 发送请求</span></label></li>
+  <li><label><input type="radio" name="type" value="script"> <span>并发请求脚本资源</span></label></li>
+  <li><label><input type="radio" name="type" value="css"> <span>并发请求样式资源</span></label></li>
+</ul>
+
+<button onclick="request.emit(1)">并发 1 个请求</button>
+<button onclick="request.emit(10)">并发 10 个请求</button>
+<button onclick="request.emit(20)">并发 20 个请求</button>
+<button onclick="request.emit(50)">并发 50 个请求</button>
+<button onclick="request.emit(100)">并发 100 个请求</button>
+
+</body>
+</html>

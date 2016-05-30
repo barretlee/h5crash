@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1,user-scalable=0">
+  <title>H5 Crash Demo - 1</title>
+</head>
+<body>
+<style>
+button {
+  border: 1px solid #CCC;
+  background: #eee;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  border-radius: 4px;
+  display: block;
+}
+#r {
+  color: #FFA500;
+  display: block;
+  border: 1px dotted #CCC;
+  padding: 10px;
+  background: #F5F5F5;
+}
+</style>
+<script>
+var Closure = function() {
+  var _cache = [];
+  var cache = 0;
+  var add = function(size) {
+    cache += size;
+    size = size * 1024 * 1024;
+    _cache.push(new Array(size).join('x'));
+    refresh();
+  };
+  var refresh = function() {
+    r.innerHTML = '内存消耗： ' + cache + 'M';
+  };
+  return {
+    cache: _cache + 'M',
+    add: add,
+    refresh: refresh
+  }
+};
+var closure = Closure();
+</script>
+
+<button onclick="closure.add(1)">增加 1M 内存消耗</button>
+<button onclick="closure.add(10)">增加 10M 内存消耗</button>
+<button onclick="closure.add(20)">增加 20M 内存消耗</button>
+<button onclick="closure.add(50)">增加 50M 内存消耗</button>
+<button onclick="closure.add(100)">增加 100M 内存消耗</button>
+
+<div id="r">内存消耗：0 M</div>
+
+</body>
+</html>

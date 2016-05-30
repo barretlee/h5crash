@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1,user-scalable=0">
+  <title>H5 Crash Demo - 2</title>
+</head>
+<body>
+<!--
+  http://div.io/topic/1348
+-->
+<style>
+ul, li {
+  list-style: none;
+}
+ul {
+  padding: 0;
+  padding-left: 10px;
+  margin: 10px 0;
+  color: #CCC;
+}
+input:checked ~ span {
+  color: #666;
+}
+button {
+  border: 1px solid #CCC;
+  background: #eee;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  border-radius: 4px;
+  display: block;
+}
+#r {
+  color: #FFA500;
+  display: block;
+  border: 1px dotted #CCC;
+  padding: 10px;
+  background: #F5F5F5;
+}
+
+.transform {
+  transform: translateZ(0);
+}
+.animation {
+  width:100px;
+  height:100px;
+  background:red;
+  position:relative;
+  animation:move 5s infinite;
+}
+
+@keyframes move {
+  from {left:0px;}
+  to {left:200px;}
+}
+</style>
+<script>
+var Layer = function() {
+  function getType() {
+    return document.querySelector('input:checked').value;
+  };
+  return {
+    createOne: function(index) {
+      var div = document.createElement('div');
+      switch(getType()) {
+        case 'opacity':
+          div.style.cssText = "opacity:" + (index / 1000);
+          break;
+        case  'transform':
+          div.className = 'transform';
+          break;
+        case  'animation':
+          div.className = 'animation';
+          break;
+        case  'zindex':
+          div.style.cssText = "position:relative; z-index:" + index;
+          break;
+      }
+      document.body.appendChild(div);
+    },
+    create: function(num) {
+      [].slice.call(document.querySelectorAll('div')).forEach(function(item) {
+        item.parentNode && item.parentNode.removeChild(item);
+      });
+      while(num--) {
+        this.createOne(num);
+      }
+    }
+  }
+};
+var layer = Layer();
+</script>
+
+<strong>层类型: </strong>
+<ul>
+  <li><label><input type="radio" checked name="type" value="opacity"> <span>通过 opacity 创建层</span></label></li>
+  <li><label><input type="radio" name="type" value="transform"> <span>通过 transforms 创建层</span></label></li>
+  <li><label><input type="radio" name="type" value="animation"> <span>通过 animation 创建层</span></label></li>
+  <li><label><input type="radio" name="type" value="zindex"> <span>通过绝对定位分层</span></label></li>
+</ul>
+
+<button onclick="layer.create(1)">创建 1 个层</button>
+<button onclick="layer.create(10)">创建 10 个层</button>
+<button onclick="layer.create(20)">创建 20 个层</button>
+<button onclick="layer.create(50)">创建 50 个层</button>
+<button onclick="layer.create(100)">创建 100 个层</button>
+<button onclick="layer.create(200)">创建 200 个层</button>
+<button onclick="layer.create(500)">创建 500 个层</button>
+<button onclick="layer.create(1000)">创建 1000 个层</button>
+<button onclick="layer.create(2000)">创建 2000 个层</button>
+<button onclick="layer.create(5000)">创建 5000 个层</button>
+<button onclick="layer.create(10000)">创建 10000 个层</button>
+
+</body>
+</html>
